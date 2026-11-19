@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
-
+import numpy as np
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -77,6 +77,13 @@ class MainWindow(QWidget):
         ax = self.fig.add_subplot(111)
 
         ax.scatter(self.temps, self.profits, s=1)
+
+        if len(self.temps) > 0:
+            m, b = np.polyfit(self.temps, self.profits, 1)
+            x_line = [min(self.temps), max(self.temps)]
+            y_line = [m * x_line[0] + b, m * x_line[1] + b]
+            ax.plot(x_line, y_line, color='red')
+            ax.text(0.05, 0.9, f'y = {m:.2f}x + {b:.2f}', transform=ax.transAxes)
 
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
